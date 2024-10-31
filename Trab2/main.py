@@ -14,6 +14,26 @@ def ingenuous(img, h, w):
                     soma += img[dy][dx]
             img[y][x] = soma / (h*w)
 
+def separable(img, h, w):
+    sepVertical(img, h)
+    sepHorizontal(img, w)
+    
+def sepVertical(img, h):
+    for y in range(len(img)):
+        for x in range(len(img[0])):
+            soma = 0
+            for cy in range(y-int(h/2), y+int(h/2)):
+                soma += img[cy][x]
+            img[y][x] = soma / h
+
+def sepHorizontal(img, w):
+    for y in range(len(img)):
+        for x in range(len(img[0])):
+            soma = 0
+            for cx in range(x-int(w/2), x+int(w/2)):
+                soma += img[y][cx]
+            img[y][x] = soma / w
+
 def main ():
 
     img = cv2.imread (INPUT_IMAGE)
@@ -26,7 +46,8 @@ def main ():
     rightCut = int(len(img[0]) - len(img[0])/3 + BOX_WIDTH)
     img = img[upCut:downCut, leftCut:rightCut]
 
-    ingenuous(img, BOX_HEIGHT, BOX_WIDTH)
+    #ingenuous(img, BOX_HEIGHT, BOX_WIDTH)
+    separable(img, BOX_HEIGHT, BOX_WIDTH)
 
     img = img[BOX_HEIGHT:len(img) - BOX_HEIGHT, BOX_WIDTH:len(img[0]) - BOX_WIDTH]
 
