@@ -3,17 +3,28 @@
 import numpy as np
 import cv2
 
-threshold = 0.87
-tamanhoBlur = [15, 15]
+threshold = 0.70
+tamanhoBlur = [11, 11]
 sigma = 10
-borradas = 3
+borradas = 4
 
-img = cv2.imread("image.jpg")
+img = cv2.imread("faker.jfif")
 img = img.astype (np.float32) / 255
 
-brightPass = np.where(img < threshold, 0, img)
+brightPass = img.copy()
 
+for y in range(len(img)):
+    for x in range(len(img[0])):
+        if img[y][x][0] > threshold and img[y][x][1] > threshold and img[y][x][2] > threshold:
+            brightPass[y][x][0] = img[y][x][0]
+            brightPass[y][x][1] = img[y][x][1]
+            brightPass[y][x][2] = img[y][x][2]
+        else:
+            brightPass[y][x] = [0, 0, 0]
+        
 borrarGauss = cv2.GaussianBlur(brightPass, [0,0], sigma)
+for i in range(borradas-1):
+    borrarGauss += cv2.GaussianBlur(brightPass, [0,0], sigma)
 
 borrar = cv2.blur(brightPass, tamanhoBlur)
 for i in range(borradas-1):
@@ -26,6 +37,6 @@ cv2.imshow("Imagem Original", img)
 imgBox = img + borrar
 cv2.imshow("Imagem Final (BoxBlur)", imgBox)
 imgGauss = img + borrarGauss
-cv2.imshow("Imagem Final (GaussianBlur)", imgBox)
+cv2.imshow("Imagem Final (GaussianBlur)", imgGauss)
 
 cv2.waitKey(0)
