@@ -20,8 +20,6 @@ for img in imgs:
     thresh = cv2.erode(thresh, kernel)
     thresh = cv2.dilate(thresh, kernel)
 
-    cv2.imshow(imgName + '- binarizada', thresh)
-
     totalRicePixels = 0
 
     for x in range(len(thresh)):
@@ -49,10 +47,10 @@ for img in imgs:
     media = np.mean(blob)
     desvio_padrao = np.std(blob)
 
-    limite_inferior = media - 1 * desvio_padrao
-    limite_superior = media + 1 * desvio_padrao
+    limite_inferior = media - 2 * desvio_padrao
+    limite_superior = media + 0.1 * desvio_padrao
 
-    valores_filtrados = blob[(blob >= limite_inferior) & (blob <= limite_superior)]
+    valores_filtrados = blob[(blob >= limite_inferior) & (blob < limite_superior)]
     soma_filtrados = np.sum(valores_filtrados)
 
     mediaDePixelsPorBlob = soma_filtrados // len(valores_filtrados)
@@ -62,7 +60,3 @@ for img in imgs:
         riceTotal += round(blob[i] / mediaDePixelsPorBlob)
 
     print(riceTotal)
-
-    cv2.waitKey(0)
-
-cv2.waitKey(0)  
